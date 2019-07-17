@@ -27,7 +27,7 @@ $ cp config/database.yml.compose config/database.yml
 $ docker swarm init
 $ docker node ls # check if your node exist and active
 $ docker build -f Dockerfile -t pivorak-web-app/app .
-$ docker stack deploy -c ./docker-compose.yml talk
+$ docker stack deploy -c ./docker-compose.yml pivorak
 $ docker exec -it "$(docker ps --filter "NAME=pivorak_app" --format "{{.ID}}")" rails db:setup
 ```
 **Note!** You can see your claster visualizer
