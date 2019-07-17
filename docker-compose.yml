@@ -1,26 +1,43 @@
 version: "3.7"
 services:
 
-  db:
-    image: postgres:9.4
+  redis:
+    container_name: redis
+    image: redis
+    deploy:
+      replicas: 1
     restart: always
     ports:
-      - "5432:5432"
+      - "6379"
+
+  db:
+    container_name: db
+    image: postgres:9.4
+    deploy:
+      replicas: 1
+    restart: always
+    ports:
+      - "5432"
     environment:
       - POSTGRES_USER=pivorak
       - POSTGRES_PASSWORD=
 
   app:
+    container_name: app
     image: pivorak-web-app/app
     command: ["rails", "server", "-b", "0.0.0.0", "-e", "development"]
-    build: .
+    deploy:
+      replicas: 1
     restart: always
     ports: 
       - "3000:3000"
-    # environment:
-    #   - pivorak_DATABASE_HOST=db
+    environment:
+      - HOST=db
+      - USER=pivorak
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - db
+      - redis
 
   visualizer:
     image: dockersamples/visualizer:stable
